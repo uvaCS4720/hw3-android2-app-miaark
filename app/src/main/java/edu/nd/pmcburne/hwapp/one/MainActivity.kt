@@ -27,6 +27,8 @@ import java.time.LocalDate
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 
 
 class MainActivity : ComponentActivity() {
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "NBA GAME EXPLORER",
+                        text = "NCAA GAME EXPLORER",
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium
                     )
@@ -163,8 +165,8 @@ class GamesViewModel : ViewModel() {
     var league by mutableStateOf("men")
         private set
 
-    fun toggleLeague() {
-        league = if (league == "men") "women" else "men"
+    fun updateLeague(newLeague: String) {
+        league = newLeague
     }
 
     fun setDate(date: LocalDate) {
@@ -218,18 +220,36 @@ class GamesViewModel : ViewModel() {
 @Composable
 fun LeaguePicker(viewModel: GamesViewModel) {
 
-    val league = viewModel.league
+    var expanded by remember { mutableStateOf(false) }
+    val selectedLeague = viewModel.league
 
-    Button(onClick = {
-        viewModel.toggleLeague()
-    }) {
+    Column {
 
-        if (league == "men") {
-            Text("Switch to Women's")
-        } else {
-            Text("Switch to Men's")
+        Button(onClick = { expanded = true }) {
+            Text("League: $selectedLeague")
         }
 
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+
+            DropdownMenuItem(
+                text = { Text("Men") },
+                onClick = {
+                    viewModel.updateLeague("men")
+                    expanded = false
+                }
+            )
+
+            DropdownMenuItem(
+                text = { Text("Women") },
+                onClick = {
+                    viewModel.updateLeague("women")
+                    expanded = false
+                }
+            )
+        }
     }
 }
 
