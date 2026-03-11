@@ -27,6 +27,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import java.util.*
 
 
@@ -36,7 +38,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            HWStarterRepoTheme{
+            HWStarterRepoTheme {
+
+                val vm: GamesViewModel = viewModel()
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -45,69 +50,90 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     Spacer(modifier = Modifier.height(20.dp))
+
                     Text(
                         text = "NBA GAME EXPLORER",
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium
                     )
 
-                    LoadGamesButton(viewModel())
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    DatePicker(vm)
+                    LoadGamesButton(vm)
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    GamesList(vm, modifier = Modifier.weight(1f))
                 }
+            }
         }
+    }
+}
+
+@Composable
+fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
+
+    val games = viewModel.games
+
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+
+        items(games) { game ->
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+
+                Text(
+                    text = "${game.away} vs ${game.home}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                if (game.gameState == "ip" || game.gameState == "live") {
+                    Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
+                }
+                else if (game.gameState == "finished" || game.gameState == "final") {
+                    Text("Winner: ${game.winner}")
+                }
+                else {
+                    Text("Starts at: ${game.startTime}")
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+            }
         }
     }
 }
 
 @Composable
 fun LoadGamesButton(viewModel: GamesViewModel) {
-    val games = viewModel.games
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(16.dp)
-    ) {
+    val date = viewModel.selectedDate
 
-        Button(onClick = {
-            // For simplicity, just use today's date
-            val today = LocalDate.now()
-            val year = today.year.toString()
-            val month = "%02d".format(today.monthValue)
-            val day = "%02d".format(today.dayOfMonth)
+    Button(onClick = {
 
-            // Launch API call
-            viewModel.viewModelScope.launch {
-                try {
-                    viewModel.loadGames(year, month, day)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+        val year = date.year.toString()
+        val month = "%02d".format(date.monthValue)
+        val day = "%02d".format(date.dayOfMonth)
 
-        }) {
-            Text("Load Games")
-        }
+        viewModel.loadGames(year, month, day)
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        games.forEach { game ->
-            Text(
-                text = "${game.away} (${game.awayScore}) vs ${game.home} (${game.homeScore})",
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            if (game.gameState == "live") {
-                Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
-            } else if (game.gameState == "final") {
-                Text("Winner: ${game.winner}")
-            } else {
-                Text("Starts at: ${game.startTime}")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+    }) {
+        Text("Load Games")
     }
 }
 class GamesViewModel : ViewModel() {
+    var selectedDate by mutableStateOf(LocalDate.now())
+        private set
+
+    fun setDate(date: LocalDate) {
+        selectedDate = date
+    }
 
     var games by mutableStateOf<List<GameInfo>>(emptyList())
         private set
@@ -164,7 +190,6 @@ class GamesViewModel : ViewModel() {
 fun DatePicker(viewModel: GamesViewModel) {
 
     val context = LocalContext.current
-    val games = viewModel.games
 
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
 
@@ -173,14 +198,9 @@ fun DatePicker(viewModel: GamesViewModel) {
         { _, year, month, dayOfMonth ->
 
             val correctedMonth = month + 1
-
             selectedDate = LocalDate.of(year, correctedMonth, dayOfMonth)
 
-            val y = year.toString()
-            val m = "%02d".format(correctedMonth)
-            val d = "%02d".format(dayOfMonth)
-
-            viewModel.loadGames(y, m, d)
+            viewModel.setDate(selectedDate)
 
         },
         selectedDate.year,
@@ -199,24 +219,5 @@ fun DatePicker(viewModel: GamesViewModel) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text("Selected Date: $selectedDate")
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        games.forEach { game ->
-            Text(
-                text = "${game.away} (${game.awayScore}) vs ${game.home} (${game.homeScore})",
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            if (game.gameState == "ip") {
-                Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
-            } else if (game.gameState == "finished") {
-                Text("Winner: ${game.winner}")
-            } else {
-                Text("Starts at: ${game.startTime}")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-        }
     }
 }
