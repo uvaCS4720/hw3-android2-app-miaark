@@ -60,8 +60,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LoadGamesButton(viewModel: GamesViewModel) {
-
-    var statusMessage by remember { mutableStateOf("") }
+    val games = viewModel.games
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -79,10 +78,8 @@ fun LoadGamesButton(viewModel: GamesViewModel) {
             viewModel.viewModelScope.launch {
                 try {
                     viewModel.loadGames(year, month, day)
-                    statusMessage = "Success! Games loaded."
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    statusMessage = "Failed to load games."
                 }
             }
 
@@ -92,12 +89,21 @@ fun LoadGamesButton(viewModel: GamesViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (statusMessage.isNotEmpty()) {
+        games.forEach { game ->
             Text(
-                text = statusMessage,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
+                text = "${game.away} (${game.awayScore}) vs ${game.home} (${game.homeScore})",
+                style = MaterialTheme.typography.bodyLarge
             )
+
+            if (game.gameState == "live") {
+                Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
+            } else if (game.gameState == "final") {
+                Text("Winner: ${game.winner}")
+            } else {
+                Text("Starts at: ${game.startTime}")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
