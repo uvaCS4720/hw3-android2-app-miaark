@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import java.util.*
 
 
@@ -75,36 +76,49 @@ class MainActivity : ComponentActivity() {
 fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
 
     val games = viewModel.games
+    val loading = viewModel.isLoading
 
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    if (loading) {
 
-        items(games) { game ->
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
+    } else {
 
-                Text(
-                    text = "${game.away} vs ${game.home}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
+        LazyColumn(
+            modifier = modifier.fillMaxWidth()
+        ) {
 
-                if (game.gameState == "ip" || game.gameState == "live") {
-                    Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
+            items(games) { game ->
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+
+                    Text(
+                        text = "${game.away} vs ${game.home}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    if (game.gameState == "ip" || game.gameState == "live") {
+                        Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
+                    }
+                    else if (game.gameState == "finished" || game.gameState == "final") {
+                        Text("Winner: ${game.winner}")
+                    }
+                    else {
+                        Text("Starts at: ${game.startTime}")
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
-                else if (game.gameState == "finished" || game.gameState == "final") {
-                    Text("Winner: ${game.winner}")
-                }
-                else {
-                    Text("Starts at: ${game.startTime}")
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -114,6 +128,7 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
 fun LoadGamesButton(viewModel: GamesViewModel) {
 
     val date = viewModel.selectedDate
+    val loading = viewModel.isLoading
 
     Button(onClick = {
 
@@ -124,11 +139,28 @@ fun LoadGamesButton(viewModel: GamesViewModel) {
         viewModel.loadGames(year, month, day)
 
     }) {
-        Text("Load Games")
+        if (loading) {
+
+            Text("Load Games")
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+
+        } else {
+
+            Text("Load Games")
+
+        }
+
     }
 }
 class GamesViewModel : ViewModel() {
     var selectedDate by mutableStateOf(LocalDate.now())
+        private set
+
+    var isLoading by mutableStateOf(false)
         private set
 
     fun setDate(date: LocalDate) {
@@ -141,6 +173,8 @@ class GamesViewModel : ViewModel() {
     fun loadGames(year: String, month: String, day: String) {
 
         viewModelScope.launch {
+
+            isLoading = true
 
             try {
 
@@ -158,23 +192,17 @@ class GamesViewModel : ViewModel() {
                     GameInfo(
                         home = g.home.names.short,
                         away = g.away.names.short,
-
                         homeScore = g.home.score,
                         awayScore = g.away.score,
-
                         gameState = g.gameState,
-
                         startDate = g.startDate,
                         startTime = g.startTime,
-
                         currentPeriod = g.currentPeriod,
                         clock = g.contestClock,
-
                         winner =
                             if (g.home.winner) g.home.names.short
                             else if (g.away.winner) g.away.names.short
                             else null,
-
                         league = "men"
                     )
                 }
@@ -182,6 +210,8 @@ class GamesViewModel : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
+            isLoading = false
         }
     }
 }
