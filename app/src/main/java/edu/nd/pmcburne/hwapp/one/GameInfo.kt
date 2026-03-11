@@ -7,7 +7,7 @@ data class GameInfo(
     val homeScore: String,
     val awayScore: String,
 
-    val gameState: String,      // upcoming, ip (in progress), finished
+    val gameState: String,      // pre, live, final
 
     val startDate: String,
     val startTime: String,

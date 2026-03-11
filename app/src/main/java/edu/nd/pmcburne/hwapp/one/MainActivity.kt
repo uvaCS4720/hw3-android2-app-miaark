@@ -55,8 +55,11 @@ class MainActivity : ComponentActivity() {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    DatePicker(vm)
-                    LoadGamesButton(vm)
+                    Row {
+                        DatePicker(vm)
+                        LoadGamesButton(vm)
+                    }
+                    LeaguePicker(vm)
 
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -89,16 +92,25 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
-                    Text(
-                        text = "${game.away} vs ${game.home}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if(game.gameState == "final" || game.gameState == "live"){
+                        Text(
+                            text = "${game.away} (${game.awayScore}) vs. ${game.home} (${game.homeScore})",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    else{
+                        Text(
+                            text = "${game.away} vs ${game.home}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
-                    if (game.gameState == "ip" || game.gameState == "live") {
+                    if (game.gameState == "live") {
                         Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
                     }
-                    else if (game.gameState == "finished" || game.gameState == "final") {
+                    else if (game.gameState == "final") {
                         Text("Winner: ${game.winner}")
                     }
                     else {
@@ -148,6 +160,13 @@ class GamesViewModel : ViewModel() {
     var games by mutableStateOf<List<GameInfo>>(emptyList())
         private set
 
+    var league by mutableStateOf("men")
+        private set
+
+    fun toggleLeague() {
+        league = if (league == "men") "women" else "men"
+    }
+
     fun setDate(date: LocalDate) {
         selectedDate = date
     }
@@ -160,7 +179,7 @@ class GamesViewModel : ViewModel() {
             try {
 
                 val response = RetrofitClient.api.getGames(
-                    gender = "men",
+                    gender = league,
                     year = year,
                     month = month,
                     day = day
@@ -184,7 +203,7 @@ class GamesViewModel : ViewModel() {
                             if (g.home.winner) g.home.names.short
                             else if (g.away.winner) g.away.names.short
                             else null,
-                        league = "men"
+                        league = league
                     )
                 }
 
@@ -195,6 +214,25 @@ class GamesViewModel : ViewModel() {
         }
     }
 }
+
+@Composable
+fun LeaguePicker(viewModel: GamesViewModel) {
+
+    val league = viewModel.league
+
+    Button(onClick = {
+        viewModel.toggleLeague()
+    }) {
+
+        if (league == "men") {
+            Text("Switch to Women's")
+        } else {
+            Text("Switch to Men's")
+        }
+
+    }
+}
+
 
 @Composable
 fun DatePicker(viewModel: GamesViewModel) {
@@ -222,7 +260,7 @@ fun DatePicker(viewModel: GamesViewModel) {
         Button(onClick = {
             datePickerDialog.show()
         }) {
-            Text("Pick Date")
+            Text("Pick Date ")
         }
 
         Spacer(modifier = Modifier.height(20.dp))
