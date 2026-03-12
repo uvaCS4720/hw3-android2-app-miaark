@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.ViewModelProvider
@@ -71,9 +72,14 @@ class MainActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "NCAA GAME EXPLORER",
+                        text = "NCAA Hoops",
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium
+                    )
+
+                    Text(
+                        text = "View NCAA college basketball game info",
+                        fontStyle = FontStyle.Italic,
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
