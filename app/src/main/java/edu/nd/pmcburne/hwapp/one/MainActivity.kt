@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import edu.nd.pmcburne.hwapp.one.ui.theme.HWStarterRepoTheme
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -71,7 +72,11 @@ class MainActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     GameSettingsPanel(vm)
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Divider(
+                        color = Color.Gray,
+                        thickness = 1.dp,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     GamesList(vm, modifier = Modifier.weight(1f))
                 }
             }
@@ -102,6 +107,11 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
                         .fillMaxWidth()
                         .padding(8.dp)
                         .background(Color.White)
+                        .border(
+                            width = 1.dp,
+                            color = Color.Black,
+                            shape = MaterialTheme.shapes.medium
+                        )
                         .padding(8.dp)
                 ) {
 
@@ -434,9 +444,4 @@ fun GameSettingsPanel(viewModel: GamesViewModel) {
         }
 
     }
-    Divider(
-        color = Color.Gray,
-        thickness = 1.dp,
-        modifier = Modifier.fillMaxWidth()
-    )
 }
