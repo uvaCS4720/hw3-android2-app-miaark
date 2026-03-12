@@ -94,27 +94,72 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
     } else {
         LazyColumn(
             modifier = modifier.fillMaxWidth()
+                .padding(vertical = 8.dp)
         ) {
             items(games) { game ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
+                        .background(Color.White)
+                        .padding(8.dp)
                 ) {
-                    if(game.gameState == "final" || game.gameState == "live"){
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
-                            text = "${game.away} (${game.awayScore}) vs. ${game.home} (${game.homeScore})",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold
+                            text = "Away",
+                            fontWeight = FontWeight.SemiBold,
+                            style = MaterialTheme.typography.bodySmall
                         )
+                        Text(
+                            text = "Home",
+                            fontWeight = FontWeight.SemiBold,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+
+                    if(game.gameState == "final" || game.gameState == "live"){
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "${game.away} (${game.awayScore})",
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = "${game.home} (${game.homeScore})",
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
                     }
                     else{
-                        Text(
-                            text = "${game.away} vs ${game.home}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "${game.away}",
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = "${game.home}",
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     if (game.gameState == "live") {
                         Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
