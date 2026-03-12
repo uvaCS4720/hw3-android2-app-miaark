@@ -29,17 +29,26 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.room.Room
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "games_db"
+        ).build()
         setContent {
+            val dao = db.gameDao()
+
+            val vm = remember {
+                GamesViewModel(dao)
+            }
+
             HWStarterRepoTheme {
-
-                val vm: GamesViewModel = viewModel()
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -152,7 +161,8 @@ fun LoadGamesButton(viewModel: GamesViewModel) {
 
     }
 }
-class GamesViewModel : ViewModel() {
+
+class GamesViewModel(private val dao: GameDao) : ViewModel() {
     var selectedDate by mutableStateOf(LocalDate.now())
         private set
 
@@ -174,7 +184,10 @@ class GamesViewModel : ViewModel() {
     }
 
     fun loadGames(year: String, month: String, day: String) {
+
         viewModelScope.launch {
+
+            val date = "%02d/%02d/%04d".format(month.toInt(), day.toInt(), year.toInt())
 
             isLoading = true
 
@@ -187,11 +200,12 @@ class GamesViewModel : ViewModel() {
                     day = day
                 )
 
-                games = response.games.map { wrapper ->
+                val entities = response.games.map { wrapper ->
 
                     val g = wrapper.game
 
-                    GameInfo(
+                    GameEntity(
+                        gameID = g.gameID,
                         home = g.home.names.short,
                         away = g.away.names.short,
                         homeScore = g.home.score,
@@ -209,9 +223,31 @@ class GamesViewModel : ViewModel() {
                     )
                 }
 
+                dao.insertGames(entities)
+
             } catch (e: Exception) {
-                e.printStackTrace()
+                println("Offline — using cached scores")
             }
+
+            val cachedGames = dao.getGames(date, league)
+
+            games = cachedGames.map {
+                GameInfo(
+                    gameID = it.gameID,
+                    home = it.home,
+                    away = it.away,
+                    homeScore = it.homeScore?.toString() ?: "",
+                    awayScore = it.awayScore?.toString() ?: "",
+                    gameState = it.gameState,
+                    startDate = it.startDate,
+                    startTime = it.startTime,
+                    currentPeriod = it.currentPeriod?.toString(),
+                    clock = it.clock,
+                    winner = it.winner,
+                    league = it.league
+                )
+            }
+
             isLoading = false
         }
     }

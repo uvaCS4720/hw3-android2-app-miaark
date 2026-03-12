@@ -9,6 +9,7 @@ data class GameWrapper(
 )
 
 data class ApiGame(
+    val gameID: String,
     val home: ApiTeam,
     val away: ApiTeam,
     val gameState: String,

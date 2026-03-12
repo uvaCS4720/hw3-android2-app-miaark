@@ -1,14 +1,21 @@
 package edu.nd.pmcburne.hwapp.one
 
-data class GameInfo(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "games")
+data class GameEntity(
+
+    @PrimaryKey
     val gameID: String,
+
     val home: String,
     val away: String,
 
-    val homeScore: String,
-    val awayScore: String,
+    val homeScore: String?,
+    val awayScore: String?,
 
-    val gameState: String,      // pre, live, final
+    val gameState: String,
 
     val startDate: String,
     val startTime: String,
@@ -18,5 +25,5 @@ data class GameInfo(
 
     val winner: String?,
 
-    val league: String          // men's or women's
+    val league: String
 )
