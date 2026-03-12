@@ -31,7 +31,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.draw.clip
 import androidx.room.Room
 
@@ -70,10 +69,7 @@ class MainActivity : ComponentActivity() {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    DatePicker(vm)
-                    LeaguePicker(vm)
-                    LoadGamesButton(vm)
-
+                    GameSettingsPanel(vm)
                     Spacer(modifier = Modifier.height(20.dp))
 
                     GamesList(vm, modifier = Modifier.weight(1f))
@@ -257,21 +253,49 @@ class GamesViewModel(private val dao: GameDao) : ViewModel() {
 
 @Composable
 fun LeaguePicker(viewModel: GamesViewModel) {
-
     var expanded by remember { mutableStateOf(false) }
     val selectedLeague = viewModel.league
 
-    Column {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Select League",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
 
-        Button(onClick = { expanded = true }) {
-            Text("League: $selectedLeague")
+        Spacer(modifier = Modifier.height(4.dp))
+
+        // The rounded "box" like DatePicker
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable { expanded = true }
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = selectedLeague.capitalize(),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = if (expanded) "▲" else "▼", // small arrow inside the box
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
 
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-
             DropdownMenuItem(
                 text = { Text("Men") },
                 onClick = {
@@ -279,7 +303,6 @@ fun LeaguePicker(viewModel: GamesViewModel) {
                     expanded = false
                 }
             )
-
             DropdownMenuItem(
                 text = { Text("Women") },
                 onClick = {
@@ -329,6 +352,39 @@ fun DatePicker(viewModel: GamesViewModel) {
         ) {
             Text(
                 text = selectedDate.toString(),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
+
+@Composable
+fun GameSettingsPanel(viewModel: GamesViewModel) {
+    var expanded by remember { mutableStateOf(true) } // start expanded
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+
+        // Content of collapsible section
+        if (expanded) {
+            Column(modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth()) {
+                DatePicker(viewModel)
+                Spacer(modifier = Modifier.height(12.dp))
+                LeaguePicker(viewModel)
+                Spacer(modifier = Modifier.height(12.dp))
+                LoadGamesButton(viewModel)
+            }
+        }
+
+        // Centered toggle arrow
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded }
+                .padding(vertical = 8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = if (expanded) "▲" else "▼",
                 style = MaterialTheme.typography.bodyLarge
             )
         }
