@@ -174,35 +174,31 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    if (game.gameState == "live") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        val (statusText, statusColor) = when (game.gameState) {
+                            "live" -> "LIVE ●" to Color(0xFF039431)
+                            "final" -> "FINISHED ⏱" to Color(0xFFA61502)
+                            else -> "UPCOMING ➜" to Color(0xFFFF9800)
+                        }
+
                         Text(
-                            buildAnnotatedString {
-                                withStyle(style = SpanStyle(color = Color(0xFF039431), fontWeight = FontWeight.SemiBold)) {
-                                    append("LIVE")
-                                }
-                                append(" - Period: ${game.currentPeriod} | Clock: ${game.clock}")
-                            }
+                            text = statusText,
+                            color = statusColor,
+                            fontWeight = FontWeight.SemiBold
                         )
-                    }
-                    else if (game.gameState == "final") {
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(style = SpanStyle(color = Color(0xFFA61502), fontWeight = FontWeight.SemiBold)) {
-                                    append("FINISHED")
-                                }
-                                append(" - Winner: ${game.winner}")
-                            }
-                        )
-                    }
-                    else {
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(style = SpanStyle(color = Color(0xFFFF9800), fontWeight = FontWeight.SemiBold)) {
-                                    append("UPCOMING")
-                                }
-                                append(" - Starts at: ${game.startTime}")
-                            }
-                        )
+
+                        val infoText = when (game.gameState) {
+                            "live" -> "Period: ${game.currentPeriod} | Clock: ${game.clock}"
+                            "final" -> "Winner: ${game.winner}"
+                            else -> "Starts at: ${game.startTime}"
+                        }
+
+                        Text(infoText)
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
