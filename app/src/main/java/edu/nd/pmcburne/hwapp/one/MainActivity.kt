@@ -110,12 +110,12 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Away",
+                            text = "AWAY",
                             fontWeight = FontWeight.SemiBold,
                             style = MaterialTheme.typography.bodySmall
                         )
                         Text(
-                            text = "Home",
+                            text = "HOME",
                             fontWeight = FontWeight.SemiBold,
                             style = MaterialTheme.typography.bodySmall
                         )
