@@ -368,7 +368,9 @@ fun LeaguePicker(viewModel: GamesViewModel) {
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth(0.9f),
+            containerColor = MaterialTheme.colorScheme.onPrimary
         ) {
             DropdownMenuItem(
                 text = { Text("Men") },
