@@ -29,9 +29,11 @@ import java.time.LocalDate
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.room.Room
 
 
@@ -54,8 +56,7 @@ class MainActivity : ComponentActivity() {
             HWStarterRepoTheme {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
+                        .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -71,7 +72,6 @@ class MainActivity : ComponentActivity() {
 
                     GameSettingsPanel(vm)
                     Spacer(modifier = Modifier.height(20.dp))
-
                     GamesList(vm, modifier = Modifier.weight(1f))
                 }
             }
@@ -362,13 +362,11 @@ fun DatePicker(viewModel: GamesViewModel) {
 
 @Composable
 fun GameSettingsPanel(viewModel: GamesViewModel) {
-    var expanded by remember { mutableStateOf(true) } // start expanded
+    var expanded by remember { mutableStateOf(true) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-
-        // Content of collapsible section
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         if (expanded) {
-            Column(modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 DatePicker(viewModel)
                 Spacer(modifier = Modifier.height(12.dp))
                 LeaguePicker(viewModel)
@@ -377,7 +375,6 @@ fun GameSettingsPanel(viewModel: GamesViewModel) {
             }
         }
 
-        // Centered toggle arrow
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -390,5 +387,11 @@ fun GameSettingsPanel(viewModel: GamesViewModel) {
                 style = MaterialTheme.typography.bodyLarge
             )
         }
+
     }
+    Divider(
+        color = Color.Gray,
+        thickness = 1.dp,
+        modifier = Modifier.fillMaxWidth()
+    )
 }
