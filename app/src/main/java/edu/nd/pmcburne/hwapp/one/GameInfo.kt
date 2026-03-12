@@ -1,3 +1,5 @@
+// SOURCE 1 USED: ChatGPT
+// Usage: Help define model to use in UI, convert DB row into format for Compose UI
 package edu.nd.pmcburne.hwapp.one
 
 data class GameInfo(

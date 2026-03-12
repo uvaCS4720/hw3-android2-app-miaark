@@ -1,3 +1,5 @@
+// SOURCE 1 USED: ChatGPT
+// Usage: How to define Room DB
 package edu.nd.pmcburne.hwapp.one
 
 import androidx.room.Database

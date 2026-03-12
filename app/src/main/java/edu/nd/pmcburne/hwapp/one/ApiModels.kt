@@ -1,3 +1,6 @@
+// SOURCE 1 USED: ChatGPT
+// Usage: Formatting of data class and how it functions and plays a part in working with other files + API response.
+//        Help define data structures matching API response
 package edu.nd.pmcburne.hwapp.one
 
 data class GameResponse(

@@ -1,3 +1,5 @@
+// SOURCE 1 USED: ChatGPT
+// Usage: UI, Selectors, working through helping create view model and factory, connecting to database/Room, turning API results into visible list
 package edu.nd.pmcburne.hwapp.one
 
 import android.os.Bundle

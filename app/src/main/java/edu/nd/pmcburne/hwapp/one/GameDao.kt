@@ -1,3 +1,5 @@
+// SOURCE 1 USED: ChatGPT
+// Usage: Inserting into DB formatting, how to interact with Room DB
 package edu.nd.pmcburne.hwapp.one
 
 import androidx.room.Dao

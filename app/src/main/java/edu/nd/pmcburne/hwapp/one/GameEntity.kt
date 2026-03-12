@@ -1,3 +1,5 @@
+// SOURCE 1 USED: ChatGPT
+// Usage: How to make Entity into table and connect to API parts (define DB structure)
 package edu.nd.pmcburne.hwapp.one
 
 import androidx.room.Entity

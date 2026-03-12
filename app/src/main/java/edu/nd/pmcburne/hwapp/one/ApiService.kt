@@ -1,3 +1,5 @@
+// SOURCE 1 USED: ChatGPT
+// Usage: API GET request formatting
 package edu.nd.pmcburne.hwapp.one
 import retrofit2.http.GET
 import retrofit2.http.Path
