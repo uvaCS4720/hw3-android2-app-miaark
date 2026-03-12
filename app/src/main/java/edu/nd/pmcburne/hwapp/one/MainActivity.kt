@@ -175,15 +175,29 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
                     Spacer(modifier = Modifier.height(4.dp))
 
                     if (game.gameState == "live") {
-                        Text("Period: ${game.currentPeriod} | Clock: ${game.clock}")
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(color = Color(0xFF039431), fontWeight = FontWeight.SemiBold)) {
+                                    append("LIVE")
+                                }
+                                append(" - Period: ${game.currentPeriod} | Clock: ${game.clock}")
+                            }
+                        )
                     }
                     else if (game.gameState == "final") {
-                        Text("Winner: ${game.winner}")
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(color = Color(0xFFA61502), fontWeight = FontWeight.SemiBold)) {
+                                    append("FINISHED")
+                                }
+                                append(" - Winner: ${game.winner}")
+                            }
+                        )
                     }
                     else {
                         Text(
                             buildAnnotatedString {
-                                withStyle(style = SpanStyle(color = Color(0xFFFF9800), fontWeight = FontWeight.SemiBold)) { // orange
+                                withStyle(style = SpanStyle(color = Color(0xFFFF9800), fontWeight = FontWeight.SemiBold)) {
                                     append("UPCOMING")
                                 }
                                 append(" - Starts at: ${game.startTime}")
