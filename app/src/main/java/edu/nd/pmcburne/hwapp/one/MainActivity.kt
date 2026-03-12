@@ -35,6 +35,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 
 
@@ -50,9 +51,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val dao = db.gameDao()
 
-            val vm = remember {
-                GamesViewModel(dao)
-            }
+            val vm: GamesViewModel = viewModel(
+                factory = GamesViewModelFactory(dao)
+            )
 
             HWStarterRepoTheme {
                 Column(
@@ -231,6 +232,19 @@ fun LoadGamesButton(viewModel: GamesViewModel) {
             Text("Load Games")
         }
 
+    }
+}
+
+class GamesViewModelFactory(
+    private val dao: GameDao
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(GamesViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return GamesViewModel(dao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
 
