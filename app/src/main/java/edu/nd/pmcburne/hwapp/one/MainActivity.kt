@@ -35,9 +35,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.room.Room
 
 
@@ -102,7 +99,7 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
     } else {
         LazyColumn(
             modifier = modifier.fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(bottom = 8.dp)
         ) {
             items(games) { game ->
                 Column(
