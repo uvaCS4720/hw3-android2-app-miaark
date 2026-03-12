@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import edu.nd.pmcburne.hwapp.one.ui.theme.HWStarterRepoTheme
 import android.app.DatePickerDialog
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +31,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.ui.draw.clip
 import androidx.room.Room
 
 
@@ -66,11 +70,9 @@ class MainActivity : ComponentActivity() {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    Row {
-                        DatePicker(vm)
-                        LoadGamesButton(vm)
-                    }
+                    DatePicker(vm)
                     LeaguePicker(vm)
+                    LoadGamesButton(vm)
 
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -293,34 +295,42 @@ fun LeaguePicker(viewModel: GamesViewModel) {
 @Composable
 fun DatePicker(viewModel: GamesViewModel) {
     val context = LocalContext.current
-
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    val selectedDate = viewModel.selectedDate
 
     val datePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-
-            val correctedMonth = month + 1
-            selectedDate = LocalDate.of(year, correctedMonth, dayOfMonth)
-
-            viewModel.setDate(selectedDate)
-
+            viewModel.setDate(LocalDate.of(year, month + 1, dayOfMonth))
         },
         selectedDate.year,
         selectedDate.monthValue - 1,
         selectedDate.dayOfMonth
     )
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Select Date",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
 
-        Button(onClick = {
-            datePickerDialog.show()
-        }) {
-            Text("Pick Date ")
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(vertical = 4.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable { datePickerDialog.show() }
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Text(
+                text = selectedDate.toString(),
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text("Selected Date: $selectedDate")
     }
 }
