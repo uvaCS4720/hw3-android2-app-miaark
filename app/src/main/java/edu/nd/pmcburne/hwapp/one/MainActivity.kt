@@ -145,7 +145,9 @@ fun LoadGamesButton(viewModel: GamesViewModel) {
 
         viewModel.loadGames(year, month, day)
 
-    }) {
+    },
+        modifier = Modifier.fillMaxWidth()
+    ) {
         if (loading) {
             Text("Load Games")
             CircularProgressIndicator(
