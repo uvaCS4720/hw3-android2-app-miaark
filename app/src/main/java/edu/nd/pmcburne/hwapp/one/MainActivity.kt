@@ -194,7 +194,7 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
 
                         val infoText = when (game.gameState) {
                             "live" -> "Period: ${game.currentPeriod} | Clock: ${game.clock}"
-                            "final" -> "Winner: ${game.winner}"
+                            "final" -> "Final | Winner: ${game.winner}"
                             else -> "Starts at: ${game.startTime}"
                         }
 
