@@ -35,6 +35,9 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.room.Room
 
 
@@ -178,7 +181,14 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
                         Text("Winner: ${game.winner}")
                     }
                     else {
-                        Text("Starts at: ${game.startTime}")
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(color = Color(0xFFFF9800), fontWeight = FontWeight.SemiBold)) { // orange
+                                    append("UPCOMING")
+                                }
+                                append(" - Starts at: ${game.startTime}")
+                            }
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
