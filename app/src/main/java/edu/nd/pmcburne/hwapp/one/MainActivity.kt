@@ -35,6 +35,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Surface
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
@@ -72,9 +73,9 @@ class MainActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "NCAA Hoops",
+                        text = "NCAA HOOPS",
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium
+                        style = MaterialTheme.typography.headlineMedium,
                     )
 
                     Text(
@@ -85,11 +86,15 @@ class MainActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     GameSettingsPanel(vm)
-                    Divider(
-                        color = Color.Gray,
-                        thickness = 1.dp,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Surface(
+                        shadowElevation = 6.dp
+                    ) {
+                        Divider(
+                            color = Color.Gray,
+                            thickness = 1.dp,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                     GamesList(vm, modifier = Modifier.weight(1f))
                 }
             }
@@ -384,7 +389,7 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
     else if (games.isEmpty()) {
         Box(
             modifier = modifier.fillMaxSize().padding(horizontal=10.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = buildAnnotatedString {
