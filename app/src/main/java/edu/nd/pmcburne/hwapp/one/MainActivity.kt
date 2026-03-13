@@ -388,7 +388,7 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
     }
     else if (games.isEmpty()) {
         Box(
-            modifier = modifier.fillMaxSize().padding(horizontal=10.dp),
+            modifier = modifier.fillMaxSize().background(Color(0xFFe6e6e6)).padding(horizontal=10.dp),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -407,12 +407,14 @@ fun GamesList(viewModel: GamesViewModel, modifier: Modifier) {
         LazyColumn(
             modifier = modifier.fillMaxWidth()
                 .padding(bottom = 8.dp)
+                .background(Color(0xFFe6e6e6))
         ) {
             items(games) { game ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
+                        .clip(MaterialTheme.shapes.medium)
                         .background(Color.White)
                         .border(
                             width = 1.dp,
