@@ -328,7 +328,7 @@ fun LoadGamesButton(viewModel: GamesViewModel) {
         modifier = Modifier.fillMaxWidth()
     ) {
         if (loading) {
-            Text("Load Games")
+            Text("Load - Refresh Games")
             Spacer(modifier = Modifier.width(8.dp))
             CircularProgressIndicator(
                 modifier = Modifier.size(20.dp),
@@ -336,7 +336,7 @@ fun LoadGamesButton(viewModel: GamesViewModel) {
                 color = MaterialTheme.colorScheme.onPrimary
             )
         } else {
-            Text("Load Games")
+            Text("Load - Refresh Games")
         }
 
     }
