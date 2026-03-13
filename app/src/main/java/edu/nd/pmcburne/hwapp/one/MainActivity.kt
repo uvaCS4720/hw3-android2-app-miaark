@@ -51,10 +51,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "games_db"
-        ).build()
+                applicationContext,
+                AppDatabase::class.java,
+                "games_db"
+            ).build()
         setContent {
             val dao = db.gameDao()
 

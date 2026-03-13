@@ -3,12 +3,11 @@
 package edu.nd.pmcburne.hwapp.one
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "games")
+@Entity(tableName = "games",
+    primaryKeys = ["gameID", "league"])
 data class GameEntity(
 
-    @PrimaryKey
     val gameID: String,
 
     val home: String,
